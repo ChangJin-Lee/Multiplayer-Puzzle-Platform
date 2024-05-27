@@ -3,6 +3,8 @@
 
 #include "MovingPlatform.h"
 
+#include "VectorUtil.h"
+
 AMovingPlatform::AMovingPlatform()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,7 +14,7 @@ AMovingPlatform::AMovingPlatform()
 void AMovingPlatform::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	if(HasAuthority())
 	{
 		SetReplicates(true);
@@ -23,15 +25,18 @@ void AMovingPlatform::BeginPlay()
 void AMovingPlatform::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	MoveStartToEnd(DeltaSeconds);
+	if(HasAuthority())
+	{
+		MoveStartToEnd(DeltaSeconds);
+	}
 }
 
 
 void AMovingPlatform::MoveStartToEnd(float DeltaSeconds)
 {
-	if(HasAuthority())
-	{
-		SetActorLocation(GetActorLocation() + FVector(1,0,0) * Lambda * DeltaSeconds);
-	}
+	FVector CurrentLocation = GetActorLocation();
+	FVector GlobalTargetLopcation = GetTransform().TransformPosition(TargetLocation);
+	FVector Direction = (GlobalTargetLopcation - CurrentLocation).GetSafeNormal();
+	SetActorLocation(CurrentLocation + Direction * Lambda * DeltaSeconds);
 }
 

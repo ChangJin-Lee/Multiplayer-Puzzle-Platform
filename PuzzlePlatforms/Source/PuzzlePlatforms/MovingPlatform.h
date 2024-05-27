@@ -21,6 +21,9 @@ public:
 	void MoveStartToEnd(float DeltaSeconds);
 
 	UPROPERTY(EditAnywhere)
-	float Lambda = 20;
+	float Lambda = 40;
+
+	UPROPERTY(EditAnywhere, Meta = (MakeEditWidget = true))
+	FVector TargetLocation;
 };
 	

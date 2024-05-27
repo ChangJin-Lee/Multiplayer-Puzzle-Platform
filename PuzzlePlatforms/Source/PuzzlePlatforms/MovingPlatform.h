@@ -21,9 +21,16 @@ public:
 	void MoveStartToEnd(float DeltaSeconds);
 
 	UPROPERTY(EditAnywhere)
-	float Lambda = 40;
+	float Lambda = 50;
 
 	UPROPERTY(EditAnywhere, Meta = (MakeEditWidget = true))
 	FVector TargetLocation;
+
+private:
+	FVector GlobalTargetLocation;
+	FVector GlobalOriginalLocation;
+	FVector OriginalDirection;
+	// float DirectionWeight = 1;
+	// bool DirectionState = false;
 };
 	

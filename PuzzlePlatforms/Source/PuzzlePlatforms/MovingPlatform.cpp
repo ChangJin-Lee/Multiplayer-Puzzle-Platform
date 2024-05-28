@@ -20,10 +20,10 @@ void AMovingPlatform::BeginPlay()
 	GlobalOriginalLocation = GetActorLocation();
 	GlobalTargetLocation = GetTransform().TransformPosition(TargetLocation);
 	OriginalDirection = (GlobalTargetLocation - GlobalOriginalLocation).GetSafeNormal();
-	DirectionWeight = 1;
-	DirectionState = false;
-	
-	if(HasAuthority())
+	// DirectionWeight = 1;
+	// DirectionState = false;
+
+	if (HasAuthority())
 	{
 		SetReplicates(true);
 		SetReplicateMovement(true);
@@ -33,7 +33,7 @@ void AMovingPlatform::BeginPlay()
 void AMovingPlatform::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	if(HasAuthority())
+	if (HasAuthority() && ActiveTriggers > 0)
 	{
 		MoveStartToEnd(DeltaSeconds);
 	}
@@ -47,7 +47,7 @@ void AMovingPlatform::MoveStartToEnd(float DeltaSeconds)
 	FVector CurrentLocation = GetActorLocation();
 	FVector Direction = (GlobalTargetLocation - CurrentLocation).GetSafeNormal();
 
-	if(FVector::PointsAreNear(CurrentLocation, GlobalTargetLocation, 1))
+	if (FVector::PointsAreNear(CurrentLocation, GlobalTargetLocation, 1))
 	{
 		FVector temp = GlobalOriginalLocation;
 		GlobalOriginalLocation = GlobalTargetLocation;
@@ -65,12 +65,27 @@ void AMovingPlatform::MoveStartToEnd(float DeltaSeconds)
 	// 	DirectionWeight = 1;
 	// 	DirectionState = false;
 	// }
-	
-	UE_LOG(LogTemp, Warning, TEXT(" CurrentLocation : %s "), *CurrentLocation.ToString());
-	UE_LOG(LogTemp, Warning, TEXT(" TargetLocation : %s "), *GlobalTargetLocation.ToString());
-	UE_LOG(LogTemp, Warning, TEXT(" Direction : %s "), *Direction.ToString());
-	
+
+	// UE_LOG(LogTemp, Warning, TEXT(" CurrentLocation : %s "), *CurrentLocation.ToString());
+	// UE_LOG(LogTemp, Warning, TEXT(" TargetLocation : %s "), *GlobalTargetLocation.ToString());
+	// UE_LOG(LogTemp, Warning, TEXT(" Direction : %s "), *Direction.ToString());
+
 	// SetActorLocation(CurrentLocation + DirectionWeight * Direction * Lambda * DeltaSeconds);
+	// if (ActiveTriggers)
+	// {
 	SetActorLocation(CurrentLocation + Direction * Lambda * DeltaSeconds);
+	// }
 }
 
+void AMovingPlatform::AddActiveTrigger()
+{
+	ActiveTriggers++;
+}
+
+void AMovingPlatform::RemoveActiveTrigger()
+{
+	if(ActiveTriggers > 0)
+	{
+		ActiveTriggers--;
+	}
+}

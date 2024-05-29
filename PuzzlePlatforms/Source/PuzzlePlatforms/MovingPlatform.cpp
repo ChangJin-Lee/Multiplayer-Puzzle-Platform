@@ -33,9 +33,12 @@ void AMovingPlatform::BeginPlay()
 void AMovingPlatform::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	if (HasAuthority() && ActiveTriggers > 0)
+	if(ActiveTriggers > 0)
 	{
-		MoveStartToEnd(DeltaSeconds);
+	    if (HasAuthority())
+    	{
+    		MoveStartToEnd(DeltaSeconds);
+    	}
 	}
 }
 
@@ -66,15 +69,8 @@ void AMovingPlatform::MoveStartToEnd(float DeltaSeconds)
 	// 	DirectionState = false;
 	// }
 
-	// UE_LOG(LogTemp, Warning, TEXT(" CurrentLocation : %s "), *CurrentLocation.ToString());
-	// UE_LOG(LogTemp, Warning, TEXT(" TargetLocation : %s "), *GlobalTargetLocation.ToString());
-	// UE_LOG(LogTemp, Warning, TEXT(" Direction : %s "), *Direction.ToString());
-
 	// SetActorLocation(CurrentLocation + DirectionWeight * Direction * Lambda * DeltaSeconds);
-	// if (ActiveTriggers)
-	// {
 	SetActorLocation(CurrentLocation + Direction * Lambda * DeltaSeconds);
-	// }
 }
 
 void AMovingPlatform::AddActiveTrigger()
